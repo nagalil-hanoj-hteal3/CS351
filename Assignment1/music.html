@@ -1,0 +1,64 @@
+<html>
+	<body>
+		<b>Welcome! This music box program is made by Elaeth Lilagan.</b>
+		<br><br>ASSIGNMENT Due Date -- <b><u><i>21 Feb 2022</b></u></i><br>
+		<br>The first 3 songs were chosen by the fam and the last note was collected from the unknown web.<br><br><b>1. Friends - Francis Magalona (via Francis M.)<br>2. 			Forevermore - Side A<br>Kaleidoscope World - Francis M.<br>4. Unknown.mp3 - snow_white_me</b><br><br>
+
+		<textarea id = "textBox" rows = "4" cols = "15">
+A
+ B
+  C
+   D
+		</textarea>
+		<textarea id = "compBox" rows = "4" cols = "15">
+		</textarea>
+		<br><br><br><button onclick = "play_me();">Play Me</button>
+		<script>
+		function play_me() {
+			alert("Hello human, bare with me for the long music, but if it is not your cup of tea, you will be eradicated! ;)");
+
+			music = document.getElementById("textBox").value;
+			console.log(music);
+			lines = music.split(/\r?\n/);
+			console.log(lines);
+
+			comp_output = "<html>\n<body>\n<script>"
+			for(i = 0; i < lines.length; i++) {
+				if(lines[i][0] == 'A') {
+					comp_output += "new Audio('A.mp3').play();";
+					setTimeout(function() {
+						new Audio('A.mp3').play();
+					}, 0);
+				}
+				if(lines[i][1] == 'B') {
+					comp_output += "new Audio('B.mp3').play();";
+					setTimeout(function() {
+						new Audio('B.mp3').play();
+					}, 261000);
+				}
+				if(lines[i][2] == 'C') {
+					comp_output += "new Audio('C.mp3').play();";
+					setTimeout(function() {
+						new Audio('B.mp3').play();
+					}, 270000);
+				}
+				if(lines[i][3] == 'D') {
+					comp_output += "new Audio('D.mp3').play();";
+					setTimeout(function() {
+						new Audio('B.mp3').play();
+					}, 250000);
+				}
+				console.log(lines[i]);
+				document.getElementById("compBox").value = comp_output + "<\/script></body></html>";
+			}
+
+			return;
+	
+		}
+		alert("Joke of the day: Why do we tell actors to break a leg...because every play has a cast");
+		
+		</script>
+
+	</body>
+</html>
+
