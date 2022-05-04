@@ -1,0 +1,176 @@
+Guidelines
+•	Late work will not be accepted
+•	The grade you are given will not be negotiated and I just won't respond to your email
+•	If I make a mistake, 100% tell me
+•	Help will not be provided the day the assignment is due
+•	Before that.. YES.. Ask for help if needed
+•	You are welcome to send me what you have via PING or email up to 1 day before due date for me to "pre-grade"
+•	But I won't do the assignment for you, and you should not do the assignment for others!
+•	Do not post on Chegg or any other sites
+•	Will report to the Dean
+•	Do not copy the work of others
+•	Will report to the Dean
+Assignment Due Date:
+All assignments are due by March 28th at 11:59pm
+
+Submitting Your Assignment:
+Email, or "PING" me a zip file with your code and any supporting files.
+
+What Needs to be submitted and Completeness:
+All submitted assignments must actually work for even partial credit.
+
+•	Your .g4 grammar file
+•	Your python code.. Feel free to Zip up your entire working directory.
+•	Screen Shot of the Turtle Drawing
+
+Assignment Motivation:
+•	Write a simple language that can be compiled directly a turtle/tool path. 
+•	Write a formal grammar
+•	Compile a formal grammar into language specific libraries
+•	Code a "G" code compiler
+•	Resume Building
+•	Formal Grammar
+•	Compiler Design and Implementation
+•	Antlr
+•	Python
+•	G Codes
+
+How the Assignment will be Graded: 
+•	Grade of F
+•	Plagiarized another student
+•	Chegg or similar site
+•	Didn't hand anything in
+•	Grade of D
+•	You handed in an incomplete "C" Grade submission 
+•	Grade of C
+•	Modify the provided code:
+•	Change the grammar from 'turtle' to 'G01'
+•	Fix the NON-WORKING algorithm in the code to be able to draw a square
+•	X_CORD and Y_CORD are absolute coordinates and the turtle draws from current position
+•	Write a test input file that draws a square 
+•	Screen Shot the Square
+•	Grade of B
+•	Grade of C plus implement one additional G-CODE, for Example:
+•	G28
+•	F
+•	Z
+•	Output should demonstrate the additional implemented code
+•	Grade of A
+•	Grade of B plus at least one more G-Code
+•	Output something more interesting than a square
+The Assignment Resources:
+•	G Code Reference
+•	https://en.wikipedia.org/wiki/G-code
+•	If you need Java
+•	https://www.oracle.com/java/technologies/downloads/#jdk17-mac
+•	If you need Python
+•	https://www.anaconda.com/products/individual
+•	Antlr Getting Started
+•	https://github.com/antlr/antlr4/blob/master/doc/getting-started.md
+•	Example Calculator
+•	https://medium.com/@raguiar2/building-a-working-calculator-in-python-with-antlr-d879e2ea9058
+•	Python Turtle Library
+•	https://docs.python.org/3/library/turtle.html
+•	Get Antlr jar
+•	curl -O https://www.antlr.org/download/antlr-4.9-complete.jar
+•	Setup Alias in linux.. Anrtlr "Getting Started" above shows how to do on windows
+•	alias antlr4='java -Xmx500M -cp "./antlr-4.9-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
+•	alias grun='java -Xmx500M -cp "./antlr-4.9-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
+•	Generate Lexer, Parser, Visitor
+•	antlr4 -Dlanguage=Python3 -visitor turtle.g4
+•	NEEDED!!! Load Antlr python runtime libs
+•	pip install antlr4-python3-runtime
+
+turtle.g4
+
+grammar turtle;
+
+start : expr | <EOF> ;
+
+expr     : 'turtle' x_cord=NUMBER y_cord=NUMBER #drawlineExpr    
+         | 'print' x_cord=NUMBER y_cord=NUMBER #printlineExpr    
+         ;
+NUMBER : ('0' .. '9') + ('.' ('0' .. '9') +)? ;
+
+turtle_test (input file)
+turtle 100 200
+
+turtle 300 400
+
+print 3 4
+
+run_me.py
+from antlr4 import * 
+from turtleLexer import turtleLexer
+from turtleParser import turtleParser
+from turtleVisitor import turtleVisitor
+import time
+
+def main():
+    lexer = turtleLexer (FileStream("turtle_test"))
+    token_stream = CommonTokenStream(lexer)
+    parser = turtleParser(token_stream)
+    visitor = turtleVisitor()
+
+   
+    while True: 
+        tree = parser.start()
+        if tree.expr() == None:
+            break
+        print(tree.toStringTree(recog=parser))
+        visitor.visit(tree)
+
+    time.sleep(2)
+
+if __name__ == '__main__':
+    main()
+
+turtleVisitor.py
+# Generated from turtle.g4 by ANTLR 4.9
+from antlr4 import *
+from turtleAst import * 
+if __name__ is not None and "." in __name__:
+    from .turtleParser import turtleParser
+else:
+    from turtleParser import turtleParser
+
+# This class defines a complete generic visitor for a parse tree produced by turtleParser.
+
+import turtle
+skk = turtle.Turtle()
+
+ 
+class turtleVisitor(ParseTreeVisitor):
+
+    # Visit a parse tree produced by turtleParser#start.
+    def visitStart(self, ctx:turtleParser.StartContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by turtleParser#drawlineExpr.
+    def visitDrawlineExpr(self, ctx:turtleParser.DrawlineExprContext):
+        target_x = int(ctx.x_cord.text)
+        target_y = int(ctx.y_cord.text)
+        cur_pos = skk.pos() 
+        if target_x > cur_pos[0]:
+            skk.right(target_x - cur_pos[0])
+        else:
+            skk.left(cur_pos[0] - target_x)
+
+        if target_y > cur_pos[0]:
+            skk.forward(target_y - cur_pos[0])
+        else:
+            skk.backward(cur_pos[0] - target_y)
+
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by turtleParser#printlineExpr.
+    def visitPrintlineExpr(self, ctx:turtleParser.PrintlineExprContext):
+        print(f"Draw Line to {ctx.x_cord.text} {ctx.y_cord.text}") 
+        return self.visitChildren(ctx)
+
+
+
+del turtleParser
+
